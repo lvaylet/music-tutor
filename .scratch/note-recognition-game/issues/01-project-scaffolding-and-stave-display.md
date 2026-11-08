@@ -4,11 +4,11 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Le projet compile et démarre via Vite avec React, TypeScript et Tailwind CSS.
-- [ ] L'environnement de test Vitest avec `@testing-library/react` et jsdom est configuré et exécutable via `npm test`.
-- [ ] La Portée en clé de Sol est rendue proprement en SVG avec ses 5 lignes horizontales et sa ligne supplémentaire sous la portée pour le Do.
-- [ ] Une Note est positionnée avec exactitude à sa hauteur musicale sur la Portée (par exemple Do4 sur sa ligne supplémentaire ou Sol4 sur la 2e ligne).
-- [ ] Les 7 boutons de réponse (`Do`, `Ré`, `Mi`, `Fa`, `Sol`, `La`, `Si`) sont visibles à l'écran dans l'ordre musical naturel sous forme de grandes cibles tactiles.
-- [ ] Un test unitaire/d'intégration valide que la Portée et les 7 boutons de notes sont présents et accessibles dans le document.
+- [x] Le projet compile et démarre via Vite avec React, TypeScript et Tailwind CSS.
+- [x] L'environnement de test Vitest avec `@testing-library/react` et jsdom est configuré et exécutable via `npm test`.
+- [x] La Portée en clé de Sol est rendue proprement en SVG avec ses 5 lignes horizontales et sa ligne supplémentaire sous la portée pour le Do.
+- [x] Une Note est positionnée avec exactitude à sa hauteur musicale sur la Portée (par exemple Do4 sur sa ligne supplémentaire ou Sol4 sur la 2e ligne).
+- [x] Les 7 boutons de réponse (`Do`, `Ré`, `Mi`, `Fa`, `Sol`, `La`, `Si`) sont visibles à l'écran dans l'ordre musical naturel sous forme de grandes cibles tactiles.
+- [x] Un test unitaire/d'intégration valide que la Portée et les 7 boutons de notes sont présents et accessibles dans le document.
