@@ -1,3 +1,7 @@
+## Git conventions
+
+- Commit messages must always be written in English, following Conventional Commits (e.g., `feat: ...`, `fix: ...`, `chore: ...`).
+
 ## Agent skills
 
 ### Issue tracker
