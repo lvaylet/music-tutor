@@ -2,6 +2,10 @@
 
 - Commit messages must always be written in English, following Conventional Commits (e.g., `feat: ...`, `fix: ...`, `chore: ...`).
 
+## Documentation maintenance
+
+- Maintain `README.md` up to date after implementing each new ticket (updating current features, commands, or behavior).
+
 ## Agent skills
 
 ### Issue tracker
