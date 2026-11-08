@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <linearGradient id="guitar" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#78350f" />
+    </linearGradient>
+  </defs>
+
+  <!-- App icon background -->
+  <rect width="512" height="512" rx="128" fill="url(#bg)" />
+
+  <!-- Guitar body shadow -->
+  <circle cx="256" cy="310" r="130" fill="url(#guitar)" />
+  <circle cx="256" cy="200" r="95" fill="url(#guitar)" />
+
+  <!-- Rosette / Sound hole -->
+  <circle cx="256" cy="245" r="45" fill="#451a03" stroke="#fef3c7" stroke-width="8" />
+
+  <!-- Guitar bridge -->
+  <rect x="210" y="360" width="92" height="20" rx="6" fill="#1c1917" />
+  <rect x="220" y="364" width="72" height="6" rx="2" fill="#f8fafc" />
+
+  <!-- Strings -->
+  <line x1="236" y1="80" x2="236" y2="360" stroke="#f1f5f9" stroke-width="3" opacity="0.9" />
+  <line x1="244" y1="80" x2="244" y2="360" stroke="#f1f5f9" stroke-width="3" opacity="0.9" />
+  <line x1="252" y1="80" x2="252" y2="360" stroke="#f1f5f9" stroke-width="3" opacity="0.9" />
+  <line x1="260" y1="80" x2="260" y2="360" stroke="#f1f5f9" stroke-width="3" opacity="0.9" />
+  <line x1="268" y1="80" x2="268" y2="360" stroke="#f1f5f9" stroke-width="3" opacity="0.9" />
+  <line x1="276" y1="80" x2="276" y2="360" stroke="#f1f5f9" stroke-width="3" opacity="0.9" />
+
+  <!-- Musical notes floating -->
+  <g fill="#ffffff" opacity="0.95" transform="translate(330, 90) scale(1.1)">
+    <circle cx="20" cy="50" r="14" />
+    <circle cx="65" cy="40" r="14" />
+    <rect x="30" y="8" width="6" height="44" />
+    <rect x="75" y="-2" width="6" height="44" />
+    <polygon points="30,8 81,-2 81,10 30,20" />
+  </g>
+</svg>

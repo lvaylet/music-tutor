@@ -23,6 +23,15 @@ export default function App({ initialState = 'IDLE' }: AppProps) {
   const [currentNote, setCurrentNote] = useState(NOTES.Do)
   const [lastWrongNote, setLastWrongNote] = useState<NoteName | null>(null)
 
+  // Mute audio state (persisted in localStorage)
+  const [isMuted, setIsMuted] = useState(() => {
+    try {
+      return localStorage.getItem('music_tutor_muted') === 'true'
+    } catch {
+      return false
+    }
+  })
+
   // History & Record tracking
   const [history, setHistory] = useState<SessionRecord[]>([])
   const [isNewRecord, setIsNewRecord] = useState(false)
@@ -35,6 +44,18 @@ export default function App({ initialState = 'IDLE' }: AppProps) {
   useEffect(() => {
     setHistory(loadHistory())
   }, [])
+
+  const toggleMute = () => {
+    setIsMuted((prev) => {
+      const next = !prev
+      try {
+        localStorage.setItem('music_tutor_muted', String(next))
+      } catch {
+        // Graceful handling
+      }
+      return next
+    })
+  }
 
   const startSession = useCallback(() => {
     setScore(0)
@@ -101,7 +122,9 @@ export default function App({ initialState = 'IDLE' }: AppProps) {
     if (selectedName === currentNote.name) {
       setScore((prev) => prev + 1)
       setLastWrongNote(null)
-      playGuitarNote(currentNote.frequency)
+      if (!isMuted) {
+        playGuitarNote(currentNote.frequency)
+      }
       setCurrentNote(getNextRandomNote(currentNote.name))
     } else {
       setLastWrongNote(selectedName)
@@ -117,14 +140,36 @@ export default function App({ initialState = 'IDLE' }: AppProps) {
   const personalRecord = getPersonalRecord(history)
 
   return (
-    <main className="min-h-screen flex flex-col justify-between py-6 px-4 max-w-3xl mx-auto">
-      <header className="text-center mb-2">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-amber-900 tracking-tight flex items-center justify-center gap-2">
-          <span>🎸</span> Music Tutor
-        </h1>
-        <p className="text-sm sm:text-base text-amber-700 font-medium mt-1">
-          Apprends les notes en clé de Sol
-        </p>
+    <main className="min-h-screen flex flex-col justify-between py-5 px-4 max-w-3xl mx-auto">
+      <header className="relative mb-2">
+        {/* Audio Mute toggle in top-right */}
+        <div className="absolute right-0 top-0">
+          <button
+            type="button"
+            data-testid="audio-toggle"
+            onClick={toggleMute}
+            aria-label={isMuted ? 'Activer le son' : 'Couper le son'}
+            className="
+              inline-flex items-center justify-center
+              w-10 h-10 sm:w-11 sm:h-11 rounded-full
+              bg-amber-100/90 hover:bg-amber-200 active:scale-95
+              border border-amber-300 shadow-xs
+              text-lg sm:text-xl select-none
+              transition-all duration-150 cursor-pointer
+            "
+          >
+            {isMuted ? '🔇' : '🔊'}
+          </button>
+        </div>
+
+        <div className="text-center px-12">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-amber-900 tracking-tight flex items-center justify-center gap-2">
+            <span>🎸</span> Music Tutor
+          </h1>
+          <p className="text-sm sm:text-base text-amber-700 font-medium mt-1">
+            Apprends les notes en clé de Sol
+          </p>
+        </div>
 
         {sessionState === 'PLAYING' && (
           <div className="mt-3 flex justify-center items-center gap-3">

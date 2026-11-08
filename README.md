@@ -14,10 +14,12 @@ L'objectif est de transformer l'apprentissage du solfège pour la guitare en un 
 
 ## Fonctionnalités
 
-### Disponibles (Tickets 01 à 04)
+### Fonctionnalités complètes (Tickets 01 à 05)
 - 🎼 **Portée musicale SVG sur-mesure** : Rendu vectoriel épuré, contrasté et réactif de la clé de Sol classique avec positionnement exact des notes et ligne supplémentaire pour le Do4.
 - 🎹 **Boutons tactiles colorés** : 7 grands boutons adaptés aux doigts d'un enfant sur écran tactile, disposés dans l'ordre musical naturel (`Do` à `Si`).
-- 🔊 **Synthèse de guitare Web Audio API** : Son de corde pincée acoustique modélisé et déclenché instantanément sans latence à chaque bonne note.
+- 🔊 **Synthèse de guitare Web Audio API & Contrôle Mute** :
+  - Son de corde pincée acoustique modélisé et déclenché instantanément sans latence à chaque bonne note.
+  - Bouton silencieux persistant (`🔇` / `🔊`) pour s'entraîner discrètement.
 - 🎯 **Boucle de reconnaissance interactive** :
   - Incrémentation du score en temps réel à chaque bonne réponse.
   - Tirage aléatoire sans répétition consécutive de la même note.
@@ -31,11 +33,11 @@ L'objectif est de transformer l'apprentissage du solfège pour la guitare en un 
   - Persistance locale et sécurisée des sessions sans inscription ni serveur.
   - Détection automatique et célébration spéciale (`🏆 Nouveau Record Personnel !`) lorsque le record est battu.
   - Graphique d'évolution interactif (histogramme SVG avec repère du record) retraçant les 15 dernières sessions.
+- 📱 **Progressive Web App (PWA) & 100% Hors-ligne** :
+  - Manifeste Web App avec icône vectorielle pour installation sur l'écran d'accueil (tablette/smartphone).
+  - Service Worker de mise en cache pour jouer sans connexion Internet (voyage, vacances).
 - ⚡ **Socle moderne et typé** : Développé avec React 19, TypeScript, Vite et Tailwind CSS v4.
-- 🧪 **Suite de tests automatisés** : Tests d'intégration et unitaires pilotés par le comportement (Vitest + React Testing Library).
-
-### En cours / À venir (Ticket 05)
-- 📴 **Ticket 05** : Mode muet (Mute ON/OFF), ergonomie responsive peaufinée et support PWA 100% hors-ligne.
+- 🧪 **Suite de tests automatisés** : 28 tests d'intégration et unitaires pilotés par le comportement (Vitest + React Testing Library).
 
 ---
 

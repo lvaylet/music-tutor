@@ -4,6 +4,59 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import App from './App'
 import * as audioService from './services/audio'
 
+describe('App - Ticket 05: Contrôle audio Mute et persistance', () => {
+  afterEach(() => {
+    localStorage.clear()
+    vi.restoreAllMocks()
+  })
+
+  it('renders audio toggle button in unmuted state by default', () => {
+    render(<App />)
+    const toggle = screen.getByTestId('audio-toggle')
+    expect(toggle).toBeInTheDocument()
+    expect(toggle).toHaveAttribute('aria-label', 'Couper le son')
+    expect(toggle).toHaveTextContent('🔊')
+  })
+
+  it('toggles to muted state, saves to localStorage, and disables sound synthesis', async () => {
+    const playAudioSpy = vi.spyOn(audioService, 'playGuitarNote').mockImplementation(() => {})
+    render(<App initialState="PLAYING" />)
+
+    const toggle = screen.getByTestId('audio-toggle')
+
+    // Click Mute
+    await userEvent.click(toggle)
+    expect(toggle).toHaveAttribute('aria-label', 'Activer le son')
+    expect(toggle).toHaveTextContent('🔇')
+    expect(localStorage.getItem('music_tutor_muted')).toBe('true')
+
+    // Click correct note (Do)
+    const doButton = screen.getByRole('button', { name: 'Note Do' })
+    await userEvent.click(doButton)
+
+    // Score increments but audio was NOT called because muted
+    expect(screen.getByTestId('score-counter')).toHaveTextContent('1')
+    expect(playAudioSpy).not.toHaveBeenCalled()
+
+    // Unmute
+    await userEvent.click(toggle)
+    expect(toggle).toHaveAttribute('aria-label', 'Couper le son')
+    expect(toggle).toHaveTextContent('🔊')
+    expect(localStorage.getItem('music_tutor_muted')).toBe('false')
+
+    playAudioSpy.mockRestore()
+  })
+
+  it('restores muted state from localStorage on initial render', () => {
+    localStorage.setItem('music_tutor_muted', 'true')
+    render(<App />)
+
+    const toggle = screen.getByTestId('audio-toggle')
+    expect(toggle).toHaveAttribute('aria-label', 'Activer le son')
+    expect(toggle).toHaveTextContent('🔇')
+  })
+})
+
 describe('App - Ticket 04: Persistance et Record personnel', () => {
   afterEach(() => {
     vi.useRealTimers()
