@@ -4,13 +4,13 @@
 
 **Blocked by:** 01: Initialisation du projet et rendu interactif de base de la Portée
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Cliquer sur le bon bouton de Note incrémente le Score affiché à l'écran.
-- [ ] Une synthèse sonore de guitare via la Web Audio API est déclenchée lors de chaque bonne réponse.
-- [ ] La validation d'une Note affiche immédiatement une nouvelle Note aléatoire choisie parmi Do4 et Si4.
-- [ ] Deux notes identiques ne sont jamais affichées consécutivement.
-- [ ] Cliquer sur un mauvais bouton de Note ne modifie pas le Score et n'avance pas la Note.
-- [ ] Une mauvaise réponse déclenche une animation de feedback visuel bienveillante sur le bouton ou la portée.
-- [ ] L'enfant peut retenter sa chance en cliquant sur un autre bouton jusqu'à trouver la bonne Note.
-- [ ] Des tests d'intégration simulent les clics corrects et incorrects et vérifient l'absence de pénalité, la non-répétition consécutive et l'émission audio mockée.
+- [x] Cliquer sur le bon bouton de Note incrémente le Score affiché à l'écran.
+- [x] Une synthèse sonore de guitare via la Web Audio API est déclenchée lors de chaque bonne réponse.
+- [x] La validation d'une Note affiche immédiatement une nouvelle Note aléatoire choisie parmi Do4 et Si4.
+- [x] Deux notes identiques ne sont jamais affichées consécutivement.
+- [x] Cliquer sur un mauvais bouton de Note ne modifie pas le Score et n'avance pas la Note.
+- [x] Une mauvaise réponse déclenche une animation de feedback visuel bienveillante sur le bouton ou la portée.
+- [x] L'enfant peut retenter sa chance en cliquant sur un autre bouton jusqu'à trouver la bonne Note.
+- [x] Des tests d'intégration simulent les clics corrects et incorrects et vérifient l'absence de pénalité, la non-répétition consécutive et l'émission audio mockée.
