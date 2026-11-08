@@ -5,6 +5,7 @@ Application web progressive (PWA) conçue pour aider les jeunes enfants débutan
 ## But du projet
 
 L'objectif est de transformer l'apprentissage du solfège pour la guitare en un jeu interactif rapide :
+
 - Reconnaître les 7 notes naturelles de la clé de Sol (**Do**, **Ré**, **Mi**, **Fa**, **Sol**, **La**, **Si**).
 - S'entraîner au cours de sessions dynamiques d'une minute.
 - Développer simultanément l'oreille musicale grâce au son d'une corde de guitare pincée à chaque bonne réponse.
@@ -15,6 +16,7 @@ L'objectif est de transformer l'apprentissage du solfège pour la guitare en un 
 ## Fonctionnalités
 
 ### Fonctionnalités complètes (Tickets 01 à 05)
+
 - 🎼 **Portée musicale SVG sur-mesure** : Rendu vectoriel épuré, contrasté et réactif de la clé de Sol classique avec positionnement exact des notes et ligne supplémentaire pour le Do4.
 - 🎹 **Boutons tactiles colorés** : 7 grands boutons adaptés aux doigts d'un enfant sur écran tactile, disposés dans l'ordre musical naturel (`Do` à `Si`).
 - 🔊 **Synthèse de guitare Web Audio API & Contrôle Mute** :
@@ -51,12 +53,14 @@ L'objectif est de transformer l'apprentissage du solfège pour la guitare en un 
 ## Installation
 
 1. Cloner le dépôt :
+
    ```bash
    git clone https://github.com/lvaylet/music-tutor.git
    cd music-tutor
    ```
 
 2. Installer les dépendances :
+
    ```bash
    npm install
    ```
@@ -66,21 +70,27 @@ L'objectif est de transformer l'apprentissage du solfège pour la guitare en un 
 ## Utilisation
 
 ### Lancer le serveur de développement
+
 ```bash
 npm run dev
 ```
+
 Ouvrez l'URL affichée dans votre terminal (par exemple `http://localhost:5173`) dans votre navigateur ou sur votre tablette connectée au même réseau local.
 
 ### Lancer les tests
+
 ```bash
 npm test
 ```
+
 Ou en mode surveillance continue :
+
 ```bash
 npm run test:watch
 ```
 
 ### Compiler pour la production
+
 ```bash
 npm run build
 npm run preview
