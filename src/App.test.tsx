@@ -1,18 +1,117 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import App from './App'
 import * as audioService from './services/audio'
 
+describe('App - Ticket 03: Cycle de vie de la Session', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('starts on the home screen with a welcoming Démarrer button', () => {
+    render(<App />)
+    expect(screen.getByRole('button', { name: /démarrer/i })).toBeInTheDocument()
+  })
+
+  it('transitions to 3-2-1 countdown when Démarrer is clicked', () => {
+    vi.useFakeTimers()
+    render(<App />)
+
+    const startButton = screen.getByRole('button', { name: /démarrer/i })
+    act(() => {
+      startButton.click()
+    })
+
+    expect(screen.getByTestId('countdown')).toHaveTextContent('3')
+
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+    expect(screen.getByTestId('countdown')).toHaveTextContent('2')
+
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+    expect(screen.getByTestId('countdown')).toHaveTextContent('1')
+
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+    // Countdown finished -> now PLAYING
+    expect(screen.getByTestId('timer')).toHaveTextContent('60')
+    expect(screen.getByTestId('stave-note')).toBeInTheDocument()
+
+    vi.useRealTimers()
+  })
+
+  it('decrements the timer and transitions to FINISHED celebration screen at 00:00', () => {
+    vi.useFakeTimers()
+    render(<App />)
+
+    // Start game
+    act(() => {
+      screen.getByRole('button', { name: /démarrer/i }).click()
+    })
+    // Advance countdown (3s)
+    act(() => {
+      vi.advanceTimersByTime(3000)
+    })
+
+    expect(screen.getByTestId('timer')).toHaveTextContent('60')
+
+    // Advance by 30 seconds
+    act(() => {
+      vi.advanceTimersByTime(30000)
+    })
+    expect(screen.getByTestId('timer')).toHaveTextContent('30')
+
+    // Advance remaining 30 seconds to finish
+    act(() => {
+      vi.advanceTimersByTime(30000)
+    })
+
+    // In FINISHED screen
+    expect(screen.getByRole('heading', { name: /bravo/i })).toBeInTheDocument()
+    expect(screen.getByTestId('final-score')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /rejouer/i })).toBeInTheDocument()
+
+    vi.useRealTimers()
+  })
+
+  it('restarts a new session when Rejouer button is clicked', () => {
+    vi.useFakeTimers()
+    render(<App />)
+
+    act(() => {
+      screen.getByRole('button', { name: /démarrer/i }).click()
+    })
+    act(() => {
+      vi.advanceTimersByTime(3000) // countdown to PLAYING
+    })
+    act(() => {
+      vi.advanceTimersByTime(60000) // full 60s session to FINISHED
+    })
+
+    const replayButton = screen.getByRole('button', { name: /rejouer/i })
+    act(() => {
+      replayButton.click()
+    })
+
+    // Back in countdown
+    expect(screen.getByTestId('countdown')).toBeInTheDocument()
+  })
+})
+
 describe('App - Ticket 01 & 02: Initialisation et boucle de reconnaissance', () => {
   it('renders the Portée stave in SVG with accessibility label', () => {
-    render(<App />)
+    render(<App initialState="PLAYING" />)
     const stave = screen.getByRole('img', { name: /portée musicale/i })
     expect(stave).toBeInTheDocument()
   })
 
   it('renders all 7 note buttons in natural ascending musical order', () => {
-    render(<App />)
+    render(<App initialState="PLAYING" />)
     const noteNames = ['Do', 'Ré', 'Mi', 'Fa', 'Sol', 'La', 'Si']
     const buttons = screen.getAllByRole('button', { name: /^Note (Do|Ré|Mi|Fa|Sol|La|Si)$/i })
     expect(buttons).toHaveLength(7)
@@ -22,18 +121,18 @@ describe('App - Ticket 01 & 02: Initialisation et boucle de reconnaissance', () 
   })
 
   it('displays an initial note on the stave', () => {
-    render(<App />)
+    render(<App initialState="PLAYING" />)
     const currentNoteElement = screen.getByTestId('stave-note')
     expect(currentNoteElement).toBeInTheDocument()
   })
 
   it('displays the current score counter starting at 0', () => {
-    render(<App />)
+    render(<App initialState="PLAYING" />)
     expect(screen.getByTestId('score-counter')).toHaveTextContent('0')
   })
 
   it('increments score and updates note when the correct note is clicked', async () => {
-    render(<App />)
+    render(<App initialState="PLAYING" />)
     // Initial note is Do by default in App
     const doButton = screen.getByRole('button', { name: 'Note Do' })
     const initialNotehead = screen.getByTestId('stave-note').querySelector('ellipse')
@@ -51,7 +150,7 @@ describe('App - Ticket 01 & 02: Initialisation et boucle de reconnaissance', () 
   })
 
   it('does not penalize score or advance note when an incorrect note is clicked', async () => {
-    render(<App />)
+    render(<App initialState="PLAYING" />)
     // Initial note is Do
     const wrongButton = screen.getByRole('button', { name: 'Note Ré' })
     const initialNotehead = screen.getByTestId('stave-note').querySelector('ellipse')
@@ -80,7 +179,7 @@ describe('App - Ticket 01 & 02: Initialisation et boucle de reconnaissance', () 
 
   it('triggers guitar audio synthesis with the note frequency on correct answers', async () => {
     const playAudioSpy = vi.spyOn(audioService, 'playGuitarNote').mockImplementation(() => {})
-    render(<App />)
+    render(<App initialState="PLAYING" />)
 
     // Initial note is Do (frequency 261.63)
     const doButton = screen.getByRole('button', { name: 'Note Do' })

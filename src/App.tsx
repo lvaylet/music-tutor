@@ -1,17 +1,75 @@
-import { useState, useRef, useEffect } from 'react'
-import { NoteName } from './types'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { NoteName, SessionState } from './types'
 import { NOTES } from './constants/notes'
+import { COUNTDOWN_SECONDS, SESSION_DURATION_SECONDS } from './constants/game'
 import { Stave } from './components/Stave'
 import { NoteButtons } from './components/NoteButtons'
+import { HomeScreen } from './components/HomeScreen'
+import { CountdownScreen } from './components/CountdownScreen'
+import { CelebrationScreen } from './components/CelebrationScreen'
 import { getNextRandomNote } from './utils/notes'
 import { playGuitarNote } from './services/audio'
 
-export default function App() {
+interface AppProps {
+  initialState?: SessionState
+}
+
+export default function App({ initialState = 'IDLE' }: AppProps) {
+  const [sessionState, setSessionState] = useState<SessionState>(initialState)
+  const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS)
+  const [timeRemaining, setTimeRemaining] = useState(SESSION_DURATION_SECONDS)
   const [score, setScore] = useState(0)
   const [currentNote, setCurrentNote] = useState(NOTES.Do)
   const [lastWrongNote, setLastWrongNote] = useState<NoteName | null>(null)
+
   const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  const startSession = useCallback(() => {
+    setScore(0)
+    setCountdown(COUNTDOWN_SECONDS)
+    setTimeRemaining(SESSION_DURATION_SECONDS)
+    setCurrentNote(getNextRandomNote())
+    setLastWrongNote(null)
+    setSessionState('COUNTDOWN')
+  }, [])
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (sessionState !== 'COUNTDOWN') return
+
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer)
+          setSessionState('PLAYING')
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [sessionState])
+
+  // Active game timer effect (60s session)
+  useEffect(() => {
+    if (sessionState !== 'PLAYING') return
+
+    const timer = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer)
+          setSessionState('FINISHED')
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [sessionState])
+
+  // Cleanup error timeout on unmount
   useEffect(() => {
     return () => {
       if (errorTimeoutRef.current) {
@@ -21,14 +79,14 @@ export default function App() {
   }, [])
 
   const handleSelectNote = (selectedName: NoteName) => {
+    if (sessionState !== 'PLAYING') return
+
     if (selectedName === currentNote.name) {
-      // Correct note
       setScore((prev) => prev + 1)
       setLastWrongNote(null)
       playGuitarNote(currentNote.frequency)
       setCurrentNote(getNextRandomNote(currentNote.name))
     } else {
-      // Soft incorrect feedback: gentle shake, no score loss, retry enabled
       setLastWrongNote(selectedName)
       if (errorTimeoutRef.current) {
         clearTimeout(errorTimeoutRef.current)
@@ -49,25 +107,48 @@ export default function App() {
           Apprends les notes en clé de Sol
         </p>
 
-        {/* Score display */}
-        <div className="mt-3 flex justify-center">
-          <div className="inline-flex items-center gap-2 text-base sm:text-lg font-bold text-amber-950 bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-xs">
-            <span aria-hidden="true">⭐</span>
-            <span>Score :</span>
-            <span data-testid="score-counter" className="text-2xl font-black text-amber-700">
-              {score}
-            </span>
+        {sessionState === 'PLAYING' && (
+          <div className="mt-3 flex justify-center items-center gap-3">
+            {/* Timer display */}
+            <div className="inline-flex items-center gap-1.5 text-base sm:text-lg font-bold text-amber-950 bg-amber-100/90 px-3.5 py-1.5 rounded-full border border-amber-300 shadow-xs">
+              <span aria-hidden="true">⏱️</span>
+              <span data-testid="timer" className="text-xl sm:text-2xl font-black text-amber-800">
+                {timeRemaining}
+              </span>
+              <span className="text-sm text-amber-700 font-semibold">s</span>
+            </div>
+
+            {/* Score display */}
+            <div className="inline-flex items-center gap-1.5 text-base sm:text-lg font-bold text-amber-950 bg-amber-100/90 px-3.5 py-1.5 rounded-full border border-amber-300 shadow-xs">
+              <span aria-hidden="true">⭐</span>
+              <span>Score :</span>
+              <span data-testid="score-counter" className="text-xl sm:text-2xl font-black text-amber-600">
+                {score}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </header>
 
-      <section className="flex-1 flex flex-col justify-center items-center my-2">
-        <Stave currentNote={currentNote} />
-      </section>
+      {sessionState === 'IDLE' && <HomeScreen onStart={startSession} />}
 
-      <footer className="w-full pb-4">
-        <NoteButtons onSelectNote={handleSelectNote} lastWrongNote={lastWrongNote} />
-      </footer>
+      {sessionState === 'COUNTDOWN' && <CountdownScreen countdown={countdown} />}
+
+      {sessionState === 'PLAYING' && (
+        <>
+          <section className="flex-1 flex flex-col justify-center items-center my-2">
+            <Stave currentNote={currentNote} />
+          </section>
+
+          <footer className="w-full pb-4">
+            <NoteButtons onSelectNote={handleSelectNote} lastWrongNote={lastWrongNote} />
+          </footer>
+        </>
+      )}
+
+      {sessionState === 'FINISHED' && (
+        <CelebrationScreen score={score} onReplay={startSession} />
+      )}
     </main>
   )
 }

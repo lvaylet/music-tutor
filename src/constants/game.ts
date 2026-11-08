@@ -1,0 +1,2 @@
+export const COUNTDOWN_SECONDS = 3
+export const SESSION_DURATION_SECONDS = 60
