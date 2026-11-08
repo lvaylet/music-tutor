@@ -14,7 +14,7 @@ L'objectif est de transformer l'apprentissage du solfège pour la guitare en un 
 
 ## Fonctionnalités
 
-### Disponibles (Tickets 01 à 03)
+### Disponibles (Tickets 01 à 04)
 - 🎼 **Portée musicale SVG sur-mesure** : Rendu vectoriel épuré, contrasté et réactif de la clé de Sol classique avec positionnement exact des notes et ligne supplémentaire pour le Do4.
 - 🎹 **Boutons tactiles colorés** : 7 grands boutons adaptés aux doigts d'un enfant sur écran tactile, disposés dans l'ordre musical naturel (`Do` à `Si`).
 - 🔊 **Synthèse de guitare Web Audio API** : Son de corde pincée acoustique modélisé et déclenché instantanément sans latence à chaque bonne note.
@@ -27,11 +27,14 @@ L'objectif est de transformer l'apprentissage du solfège pour la guitare en un 
   - Décompte visuel dynamique 3-2-1 pour se concentrer avant le départ.
   - Chronomètre visible de 60 secondes en temps réel.
   - Écran de célébration festif avec affichage valorisant du Score final et bouton « Rejouer » instantané.
+- 📈 **Historique & Record personnel (`localStorage`)** :
+  - Persistance locale et sécurisée des sessions sans inscription ni serveur.
+  - Détection automatique et célébration spéciale (`🏆 Nouveau Record Personnel !`) lorsque le record est battu.
+  - Graphique d'évolution interactif (histogramme SVG avec repère du record) retraçant les 15 dernières sessions.
 - ⚡ **Socle moderne et typé** : Développé avec React 19, TypeScript, Vite et Tailwind CSS v4.
 - 🧪 **Suite de tests automatisés** : Tests d'intégration et unitaires pilotés par le comportement (Vitest + React Testing Library).
 
-### En cours / À venir (Tickets 04 & 05)
-- 📈 **Ticket 04** : Historique persisté en `localStorage`, calcul du record absolu et graphique d'évolution des scores.
+### En cours / À venir (Ticket 05)
 - 📴 **Ticket 05** : Mode muet (Mute ON/OFF), ergonomie responsive peaufinée et support PWA 100% hors-ligne.
 
 ---

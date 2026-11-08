@@ -73,7 +73,7 @@ export const Stave: React.FC<StaveProps> = ({ currentNote, noteX = 260 }) => {
         )}
 
         {/* Note representation */}
-        <g data-testid="stave-note">
+        <g data-testid="stave-note" data-note={currentNote.name}>
           {/* Notehead (oval, slightly tilted) */}
           <ellipse
             cx={noteX}

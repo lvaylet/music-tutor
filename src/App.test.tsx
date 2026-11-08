@@ -4,6 +4,64 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import App from './App'
 import * as audioService from './services/audio'
 
+describe('App - Ticket 04: Persistance et Record personnel', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+    localStorage.clear()
+  })
+
+  it('displays empty state encouragement when no sessions have been played', () => {
+    render(<App />)
+    expect(screen.getByTestId('progress-chart')).toHaveTextContent(/première session/i)
+    expect(screen.queryByTestId('personal-record')).not.toBeInTheDocument()
+  })
+
+  it('persists a completed session to localStorage and displays new record badge', () => {
+    vi.useFakeTimers()
+    render(<App />)
+
+    // Start session
+    act(() => {
+      screen.getByRole('button', { name: /démarrer/i }).click()
+    })
+    act(() => {
+      vi.advanceTimersByTime(3000) // countdown to PLAYING
+    })
+
+    // Simulate clicking correct note
+    const currentNoteName = screen.getByTestId('stave-note').getAttribute('data-note')
+    const correctButton = screen.getByRole('button', { name: `Note ${currentNoteName}` })
+    act(() => {
+      correctButton.click()
+    })
+
+    // Advance 60s to finish
+    act(() => {
+      vi.advanceTimersByTime(60000)
+    })
+
+    // Finished screen shows New Record badge
+    expect(screen.getByTestId('new-record-badge')).toBeInTheDocument()
+
+    // localStorage contains the session
+    const saved = JSON.parse(localStorage.getItem('music_tutor_history') || '[]')
+    expect(saved).toHaveLength(1)
+    expect(saved[0].score).toBe(1)
+  })
+
+  it('displays the personal record on home screen after reload', () => {
+    localStorage.setItem(
+      'music_tutor_history',
+      JSON.stringify([{ id: '1', timestamp: Date.now(), score: 14 }])
+    )
+
+    render(<App />)
+
+    expect(screen.getByTestId('personal-record')).toHaveTextContent('14')
+    expect(screen.getByTestId('progress-chart')).toBeInTheDocument()
+  })
+})
+
 describe('App - Ticket 03: Cycle de vie de la Session', () => {
   afterEach(() => {
     vi.useRealTimers()

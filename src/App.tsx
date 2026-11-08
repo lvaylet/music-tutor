@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { NoteName, SessionState } from './types'
+import { NoteName, SessionRecord, SessionState } from './types'
 import { NOTES } from './constants/notes'
 import { COUNTDOWN_SECONDS, SESSION_DURATION_SECONDS } from './constants/game'
 import { Stave } from './components/Stave'
@@ -9,6 +9,7 @@ import { CountdownScreen } from './components/CountdownScreen'
 import { CelebrationScreen } from './components/CelebrationScreen'
 import { getNextRandomNote } from './utils/notes'
 import { playGuitarNote } from './services/audio'
+import { loadHistory, saveSession, getPersonalRecord } from './services/history'
 
 interface AppProps {
   initialState?: SessionState
@@ -22,7 +23,18 @@ export default function App({ initialState = 'IDLE' }: AppProps) {
   const [currentNote, setCurrentNote] = useState(NOTES.Do)
   const [lastWrongNote, setLastWrongNote] = useState<NoteName | null>(null)
 
+  // History & Record tracking
+  const [history, setHistory] = useState<SessionRecord[]>([])
+  const [isNewRecord, setIsNewRecord] = useState(false)
+
   const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const scoreRef = useRef(score)
+  scoreRef.current = score
+
+  // Load history on mount
+  useEffect(() => {
+    setHistory(loadHistory())
+  }, [])
 
   const startSession = useCallback(() => {
     setScore(0)
@@ -30,6 +42,7 @@ export default function App({ initialState = 'IDLE' }: AppProps) {
     setTimeRemaining(SESSION_DURATION_SECONDS)
     setCurrentNote(getNextRandomNote())
     setLastWrongNote(null)
+    setIsNewRecord(false)
     setSessionState('COUNTDOWN')
   }, [])
 
@@ -59,6 +72,10 @@ export default function App({ initialState = 'IDLE' }: AppProps) {
       setTimeRemaining((prev) => {
         if (prev <= 1) {
           clearInterval(timer)
+          // Save session to localStorage
+          const result = saveSession(scoreRef.current)
+          setIsNewRecord(result.isNewRecord)
+          setHistory(loadHistory())
           setSessionState('FINISHED')
           return 0
         }
@@ -97,6 +114,8 @@ export default function App({ initialState = 'IDLE' }: AppProps) {
     }
   }
 
+  const personalRecord = getPersonalRecord(history)
+
   return (
     <main className="min-h-screen flex flex-col justify-between py-6 px-4 max-w-3xl mx-auto">
       <header className="text-center mb-2">
@@ -130,7 +149,9 @@ export default function App({ initialState = 'IDLE' }: AppProps) {
         )}
       </header>
 
-      {sessionState === 'IDLE' && <HomeScreen onStart={startSession} />}
+      {sessionState === 'IDLE' && (
+        <HomeScreen onStart={startSession} history={history} />
+      )}
 
       {sessionState === 'COUNTDOWN' && <CountdownScreen countdown={countdown} />}
 
@@ -147,7 +168,12 @@ export default function App({ initialState = 'IDLE' }: AppProps) {
       )}
 
       {sessionState === 'FINISHED' && (
-        <CelebrationScreen score={score} onReplay={startSession} />
+        <CelebrationScreen
+          score={score}
+          isNewRecord={isNewRecord}
+          personalRecord={personalRecord}
+          onReplay={startSession}
+        />
       )}
     </main>
   )
