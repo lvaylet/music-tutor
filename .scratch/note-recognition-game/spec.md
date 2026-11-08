@@ -1,6 +1,6 @@
 # Spécification : Jeu d'apprentissage des notes (Clé de Sol)
 
-Status: ready-for-agent
+Status: resolved
 
 ## Problem Statement
 
